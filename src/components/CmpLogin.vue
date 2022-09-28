@@ -1,12 +1,14 @@
 <template>
   <q-page
-    class="bg-light-green window-height window-width row justify-center items-center"
+    class="bg-grey-10 window-height window-width row justify-center items-center"
   >
     <div class="column">
       <div class="row">
-        <h5 class="text-h5 text-white q-my-md">
-          Cempre - Cadastro de empresas
-        </h5>
+        <img
+          alt="Quasar logo"
+          src="~assets/logo-cempre-sem-fundo.svg"
+          style="width: 360px"
+        />
       </div>
       <div class="row">
         <q-card square bordered class="q-pa-lg shadow-1">
@@ -50,7 +52,7 @@
 
 <script>
 export default {
-  name: "cmp_login",
+  name: "CmpLogin",
   data() {
     return {
       email: "",

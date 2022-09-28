@@ -1,14 +1,13 @@
 <template>
-  <router-view />
+  <CmpLogin />
 </template>
 
 <script>
 import { defineComponent } from "vue";
+import CmpLogin from "/src/components/CmpLogin.vue";
 
 export default defineComponent({
-  name: "App",
-  mounted() {
-    this.$q.dark.set(true);
-  },
+  name: "PagLogin",
+  components: { CmpLogin },
 });
 </script>
