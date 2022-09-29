@@ -21,34 +21,62 @@
                 filled
                 clearable
                 outlined
-                v-model="email"
-                type="email"
-                label="email"
+                v-model="empresa"
+                type="text"
+                label="Empresa"
               />
               <q-input
                 square
                 filled
                 clearable
                 outlined
-                v-model="password"
+                v-model="login"
+                type="text"
+                label="Login"
+              />
+              <q-input
+                square
+                filled
+                clearable
+                outlined
+                v-model="senha"
                 type="password"
-                label="password"
+                label="Senha"
               />
             </q-form>
           </q-card-section>
           <q-card-actions class="q-px-md">
             <q-btn
+              icon="login"
               color="yellow-8"
-              text-color="grey-8"
-              size="lg"
+              text-color="grey-10"
+              size="md"
               class="full-width"
               label="Entrar"
             />
           </q-card-actions>
-          <q-card-section class="text-center q-pa-none">
-            <p class="text-grey-6">Recuperar senha</p>
-          </q-card-section>
         </q-card>
+      </div>
+      <div bordered class="row q-mt-sm">
+        <q-btn
+          size="sm"
+          class="col text-caption"
+          flat
+          dense
+          icon="mdi-database-plus"
+          @click="void 0"
+          label="Cadastrar"
+        />
+        <q-btn
+          size="sm"
+          class="col text-caption"
+          flat
+          dense
+          icon="mdi-lock-reset"
+          aria-label="Menu"
+          @click="void 0"
+          label="Recuperar senha"
+        />
       </div>
     </div>
   </q-page>
@@ -59,8 +87,9 @@ export default {
   name: "CmpLogin",
   data() {
     return {
-      email: "",
-      password: "",
+      empresa: "",
+      login: "",
+      senha: "",
     };
   },
 };
