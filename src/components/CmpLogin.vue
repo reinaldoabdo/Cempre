@@ -83,14 +83,31 @@
 </template>
 
 <script>
+import servAutenticacao from "src/services/ServAutenticacao.js";
+
 export default {
   name: "CmpLogin",
-  data() {
+  setup() {
+    const { autenticacaoLogin } = servAutenticacao();
     return {
+      autenticacaoLogin,
       empresa: "",
       login: "",
       senha: "",
     };
+  },
+  mounted() {
+    this.autenticar();
+  },
+  methods: {
+    autenticar() {
+      const empresa = "";
+      const login = "";
+      const senha = "";
+      const res = this.autenticacaoLogin(empresa, login, senha);
+      console.log("Res Login: ", res);
+    },
+    //
   },
 };
 </script>
