@@ -9,7 +9,7 @@ import axios from "axios";
 // for each client)
 const api = axios.create({ baseURL: "https://api.example.com" });
 
-const wscempre = axios.create({
+const apiCempre = axios.create({
   baseURL: "https://btms5.com.br/ws/wscempre.php",
 });
 
@@ -25,4 +25,4 @@ export default boot(({ app }) => {
   //       so you can easily perform requests against your app's API
 });
 
-export { wscempre };
+export { apiCempre };
