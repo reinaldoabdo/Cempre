@@ -21,7 +21,7 @@
                 filled
                 clearable
                 outlined
-                v-model="empresa"
+                v-model="form.empresa"
                 type="text"
                 label="Empresa"
               />
@@ -30,7 +30,7 @@
                 filled
                 clearable
                 outlined
-                v-model="login"
+                v-model="form.login"
                 type="text"
                 label="Login"
               />
@@ -39,7 +39,7 @@
                 filled
                 clearable
                 outlined
-                v-model="senha"
+                v-model="form.senha"
                 type="password"
                 label="Senha"
               />
@@ -53,6 +53,7 @@
               size="md"
               class="full-width"
               label="Entrar"
+              @click="autenticar()"
             />
           </q-card-actions>
         </q-card>
@@ -83,33 +84,77 @@
 </template>
 
 <script>
+import { defineComponent, onMounted, ref } from "vue";
+import { useQuasar } from "quasar";
 import servAutenticacao from "src/services/ServAutenticacao.js";
 
-export default {
+export default defineComponent({
   name: "CmpLogin",
   setup() {
-    const { autenticacaoLogin } = servAutenticacao();
-    return {
-      autenticacaoLogin,
+    const serv = servAutenticacao();
+    const $q = useQuasar();
+    const form = ref({
       empresa: "",
       login: "",
       senha: "",
+    });
+    //
+    $q.notify.setDefaults({
+      position: "top",
+      timeout: 2500,
+      textColor: "black",
+    });
+    // Mounted
+    onMounted(() => {
+      //autenticar();
+      $q.notify({
+        type: "positive",
+        message: "Iniciou !!!",
+      });
+    });
+
+    return {
+      serv,
+      form,
     };
   },
-  mounted() {
-    this.autenticar();
-  },
+  // Methods
   methods: {
+    //Autenticar
     autenticar() {
-      const empresa = "";
-      const login = "";
-      const senha = "";
-      const res = this.autenticacaoLogin(empresa, login, senha);
-      console.log("Res Login: ", res);
+      console.log("aqui", this.form);
+
+      try {
+        if (
+          this.form.empresa.length < 3 ||
+          this.form.login.length < 3 ||
+          this.form.senha.length < 3
+        ) {
+          this.$q.notify({
+            type: "negative",
+            message: "Os campos Empresa, Login e Senha são obrigatórios",
+          });
+          return false;
+        }
+
+        const dados = Object.assign({}, this.form);
+
+        const res = this.serv.autenticacaoLogin(dados);
+
+        if (res.retorno === false) {
+          this.$q.notify({
+            type: "negative",
+            message: "Erro na API",
+          });
+        }
+
+        console.log("Res Login: ", res);
+      } catch (error) {
+        console.error(error);
+      }
     },
-    //
   },
-};
+});
 </script>
 
 <style>

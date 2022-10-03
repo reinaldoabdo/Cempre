@@ -40,7 +40,7 @@ export default function apiBase() {
       })
       .catch(function (e) {
         console.error(">>>Err (" + servico + "): ", e);
-        return false;
+        return e;
       });
 
     return { retorno };

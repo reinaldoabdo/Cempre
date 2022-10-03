@@ -111,7 +111,7 @@ module.exports = configure(function (ctx) {
       // directives: [],
 
       // Quasar plugins
-      plugins: [],
+      plugins: ["Notify"],
     },
 
     // animations: 'all', // --- includes all animations
@@ -163,7 +163,7 @@ module.exports = configure(function (ctx) {
         description: `Cempre - Cadastro de empresas`,
         display: "standalone",
         orientation: "portrait",
-        background_color: "#ffffff",
+        background_color: "#d2d2d2",
         theme_color: "#027be3",
         icons: [
           {
