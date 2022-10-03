@@ -10,7 +10,8 @@ import axios from "axios";
 const api = axios.create({ baseURL: "https://api.example.com" });
 
 const apiCempre = axios.create({
-  baseURL: "https://btms5.com.br/ws/wscempre.php",
+  //baseURL: "https://btms5.com.br/ws/wscempre.php",
+  baseURL: "http://localhost:8081/wscempre.php",
 });
 
 export default boot(({ app }) => {
