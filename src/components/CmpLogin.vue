@@ -121,11 +121,14 @@ export default defineComponent({
   // Methods
   methods: {
     //Autenticar
-    autenticar() {
+    async autenticar() {
       console.log("aqui", this.form);
 
       try {
         if (
+          !this.form.empresa ||
+          !this.form.login ||
+          !this.form.senha ||
           this.form.empresa.length < 3 ||
           this.form.login.length < 3 ||
           this.form.senha.length < 3
@@ -139,12 +142,13 @@ export default defineComponent({
 
         const dados = Object.assign({}, this.form);
 
-        const res = this.serv.autenticacaoLogin(dados);
+        const res = await this.serv.autenticacaoLogin(dados);
+        console.log("res", res);
 
-        if (res.retorno === false) {
+        if (res.info[0].msg.length > 0) {
           this.$q.notify({
             type: "negative",
-            message: "Erro na API",
+            message: res.info[0].msg,
           });
         }
 

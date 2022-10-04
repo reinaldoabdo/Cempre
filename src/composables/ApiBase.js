@@ -1,7 +1,18 @@
 import { apiCempre } from "src/boot/axios";
 
 export default function apiBase() {
-  //
+  // Esquema padrão
+  const resposta = {
+    info: [
+      {
+        cdg_msg: 0,
+        msg: "",
+        registros: 0,
+      },
+    ],
+  };
+
+  // API ENVIAR
   const apiEnviar = async (chave, servico, dados) => {
     if (!chave || !servico || !dados) {
       console.error(
@@ -25,25 +36,33 @@ export default function apiBase() {
 
     const retorno = await apiCempre
       .post(apiCempre.defaults.baseURL, jtext)
-      .then((response) => {
+      .then((resposta) => {
         //
-        console.log("<<<Resposta<<< (" + servico + "): ", response);
+        console.log("<<<Resposta<<< (" + servico + "): ", resposta);
 
-        if (response.data && response.data.info) {
-          const info = response.data.info[0];
+        if (resposta.data && resposta.data.info) {
+          const info = resposta.data.info[0];
           if (info.cdg_erro > 0) {
             throw new Error(info.msg);
           }
         }
 
-        return response.data;
+        return resposta.data;
       })
       .catch(function (e) {
         console.error(">>>Err (" + servico + "): ", e);
         return e;
       });
 
-    return { retorno };
+    console.log("Retorno", retorno.message);
+
+    if (retorno.message.length > 0) {
+      resposta.info[0].msg = retorno.message;
+    }
+
+    resposta.data = retorno.data;
+
+    return resposta;
   };
 
   return {
