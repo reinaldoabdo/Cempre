@@ -19,7 +19,6 @@
               <q-input
                 square
                 filled
-                clearable
                 outlined
                 v-model="form.empresa"
                 type="text"
@@ -28,7 +27,6 @@
               <q-input
                 square
                 filled
-                clearable
                 outlined
                 v-model="form.login"
                 type="text"
@@ -37,7 +35,6 @@
               <q-input
                 square
                 filled
-                clearable
                 outlined
                 v-model="form.senha"
                 type="password"
@@ -140,7 +137,7 @@ export default defineComponent({
           return false;
         }
 
-        const dados = Object.assign({}, this.form);
+        const dados = Object.assign(this.form);
 
         const res = await this.serv.autenticacaoLogin(dados);
         console.log("res", res);
@@ -150,6 +147,21 @@ export default defineComponent({
             type: "negative",
             message: res.info[0].msg,
           });
+          return false;
+        }
+
+        if (res.dados && res.dados[0].chave) {
+          sessionStorage.setItem("sessionx", JSON.stringify(res.dados[0]));
+          //Recupera a session
+          const sessionx = JSON.parse(sessionStorage.getItem("sessionx"));
+          sessionStorage.setItem("chave", sessionx.chave);
+          this.$router.push("cadastro");
+        } else {
+          this.$q.notify({
+            type: "negative",
+            message: res.info[0].msg,
+          });
+          return false;
         }
 
         console.log("Res Login: ", res);

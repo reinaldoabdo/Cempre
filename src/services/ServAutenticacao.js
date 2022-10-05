@@ -15,15 +15,13 @@ export default function servAutenticacao() {
 
       for (var i in campos) {
         const campo = campos[i];
-
-        console.log("C", campo);
-
         if (!dados[campo] || dados[campo].length < 3) {
           throw new Error(nomeServ + ": Faltando o campo " + campo);
         }
       }
 
-      const servico = "ApiLogin";
+      const chave = "";
+      const servico = "login";
       const res = await apiEnviar(chave, servico, dados);
 
       return res;

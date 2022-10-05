@@ -6,6 +6,7 @@ const routes = [
       { path: "/", component: () => import("pages/PagLogin.vue") },
       { path: "/login", component: () => import("pages/PagLogin.vue") },
     ],
+    meta: { transition: "slide-left" },
   },
   {
     path: "/",
@@ -13,6 +14,7 @@ const routes = [
     children: [
       { path: "/cadastro", component: () => import("pages/IndexPage.vue") },
     ],
+    meta: { transition: "slide-left" },
   },
 
   // Always leave this as last one,
@@ -20,6 +22,7 @@ const routes = [
   {
     path: "/:catchAll(.*)*",
     component: () => import("pages/ErrorNotFound.vue"),
+    meta: { transition: "slide-left" },
   },
 ];
 

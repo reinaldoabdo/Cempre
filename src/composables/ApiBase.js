@@ -10,11 +10,12 @@ export default function apiBase() {
         registros: 0,
       },
     ],
+    dados: [],
   };
 
   // API ENVIAR
   const apiEnviar = async (chave, servico, dados) => {
-    if (!chave || !servico || !dados) {
+    if ((!chave && servico != "login") || !servico || !dados) {
       console.error(
         "***Faltando dados: composables/apiBase/apiEnviar((string)chave, (string)servico, (json)dados)"
       );
@@ -25,9 +26,7 @@ export default function apiBase() {
           servico: servico,
           chave: chave,
         },
-        data: {
-          dados,
-        },
+        data: dados,
       },
     };
     const jtext = JSON.stringify(json);
@@ -46,7 +45,6 @@ export default function apiBase() {
             throw new Error(info.msg);
           }
         }
-
         return resposta.data;
       })
       .catch(function (e) {
@@ -54,13 +52,13 @@ export default function apiBase() {
         return e;
       });
 
-    console.log("Retorno", retorno.message);
+    console.log("---Retorno", retorno);
 
-    if (retorno.message.length > 0) {
+    if (retorno && retorno.message && retorno.message.length > 0) {
       resposta.info[0].msg = retorno.message;
     }
 
-    resposta.data = retorno.data;
+    resposta.dados = retorno.dados;
 
     return resposta;
   };

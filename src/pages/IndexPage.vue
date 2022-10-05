@@ -1,9 +1,8 @@
 <template>
   <q-page class="flex flex-center">
     <img
-      alt="Quasar logo"
-      src="~assets/quasar-logo-vertical.svg"
-      style="width: 200px; height: 200px"
+      alt="Logo Cempre - Cadastro de empresas"
+      src="~assets/logo-cempre-sem-fundo.png"
     />
   </q-page>
 </template>
@@ -14,4 +13,6 @@ import { defineComponent } from "vue";
 export default defineComponent({
   name: "IndexPage",
 });
+
+console.log("Passou na Index");
 </script>
