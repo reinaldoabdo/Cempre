@@ -13,9 +13,18 @@
         <img alt="Cempre logo" src="~assets/logo-cempre-sem-fundo.png" />
       </q-card>
       <div class="row">
-        <q-card rounded-borders bordered class="q-pa-lg shadow-1">
-          <q-card-section>
-            <q-form class="q-gutter-md">
+        <q-card
+          rounded-borders
+          bordered
+          class="q-pa-sm shadow-1"
+          style="height: 400px"
+        >
+          <!-- LOGIN -->
+
+          <q-card-section v-show="show_form_login" key="1">
+            <q-form class="q-gutter-md" key="2">
+              <div class="text-h5 text-center">Entrar</div>
+
               <q-input
                 square
                 filled
@@ -40,39 +49,109 @@
                 type="password"
                 label="Senha"
               />
+              <q-card-actions class="">
+                <q-btn
+                  icon="login"
+                  color="yellow-8"
+                  text-color="grey-10"
+                  size="md"
+                  class="full-width"
+                  label="Entrar"
+                  @click="autenticar()"
+                />
+              </q-card-actions>
             </q-form>
           </q-card-section>
-          <q-card-actions class="q-px-md">
-            <q-btn
-              icon="login"
-              color="yellow-8"
-              text-color="grey-10"
-              size="md"
-              class="full-width"
-              label="Entrar"
-              @click="autenticar()"
-            />
-          </q-card-actions>
+
+          <!--CADASTRO-->
+
+          <q-card-section v-show="show_form_cadastro" key="3">
+            <q-form class="q-gutter-md" key="4">
+              <div class="text-h5 text-center">Cadastro</div>
+
+              <q-input
+                square
+                filled
+                outlined
+                v-model="form.cnpj"
+                type="text"
+                label="CNPJ"
+              />
+
+              <q-card-actions class="q-px-md">
+                <q-btn
+                  icon="mdi-database-plus"
+                  color="yellow-8"
+                  text-color="grey-10"
+                  size="md"
+                  class="col"
+                  label="Cadastrar"
+                  @click="cadastrar()"
+                />
+              </q-card-actions>
+            </q-form>
+          </q-card-section>
+
+          <!--RECUPERAR SENHA-->
+
+          <q-card-section v-show="show_form_recuperar_senha">
+            <q-form class="q-gutter-md">
+              <div class="text-h5 text-center">Recuperar senha</div>
+
+              <q-input
+                square
+                filled
+                outlined
+                v-model="form.cnpj"
+                type="text"
+                label="E-Mail"
+              />
+
+              <q-card-actions class="q-px-md">
+                <q-btn
+                  icon="mdi-lock-reset"
+                  color="yellow-8"
+                  text-color="grey-10"
+                  size="md"
+                  class="col"
+                  label="Recuperar senha"
+                  @click="recuperar_senha()"
+                />
+              </q-card-actions>
+            </q-form>
+          </q-card-section>
         </q-card>
       </div>
-      <div bordered class="row q-mt-sm">
+      <div bordered class="row q-mt-sm" style="max-height: 40px">
         <q-btn
+          v-show="show_btn_login"
+          size="sm"
+          class="col text-caption"
+          flat
+          dense
+          icon="mdi-login"
+          @click="exibe_login()"
+          label="Login"
+        />
+
+        <q-btn
+          v-show="show_btn_cadastro"
           size="sm"
           class="col text-caption"
           flat
           dense
           icon="mdi-database-plus"
-          @click="void 0"
+          @click="exibe_cadastro()"
           label="Cadastrar"
         />
         <q-btn
+          v-show="show_btn_recuperar_senha"
           size="sm"
           class="col text-caption"
           flat
           dense
           icon="mdi-lock-reset"
-          aria-label="Menu"
-          @click="void 0"
+          @click="exibe_recuperar_senha()"
           label="Recuperar senha"
         />
       </div>
@@ -95,6 +174,13 @@ export default defineComponent({
       login: "",
       senha: "",
     });
+    const show_form_login = ref(true);
+    const show_form_cadastro = ref(false);
+    const show_btn_cadastro = ref(true);
+    const show_btn_login = ref(false);
+    const show_btn_recuperar_senha = ref(true);
+    const show_form_recuperar_senha = ref(false);
+
     //
     $q.notify.setDefaults({
       position: "top",
@@ -111,6 +197,12 @@ export default defineComponent({
     });
 
     return {
+      show_btn_cadastro,
+      show_btn_login,
+      show_form_login,
+      show_form_cadastro,
+      show_form_recuperar_senha,
+      show_btn_recuperar_senha,
       serv,
       form,
     };
@@ -168,6 +260,35 @@ export default defineComponent({
       } catch (error) {
         console.error(error);
       }
+    },
+    //Cadastrar
+    async cadastrar() {},
+    // Botão exibir cadastro
+    async exibe_cadastro() {
+      this.show_form_cadastro = true;
+      this.show_form_login = false;
+      this.show_form_recuperar_senha = false;
+      this.show_btn_login = true;
+      this.show_btn_cadastro = false;
+      this.show_btn_recuperar_senha = true;
+    },
+    // Botão exibir login
+    async exibe_login() {
+      this.show_form_login = true;
+      this.show_form_cadastro = false;
+      this.show_form_recuperar_senha = false;
+      this.show_btn_login = false;
+      this.show_btn_cadastro = true;
+      this.show_btn_recuperar_senha = true;
+    },
+    // Botão exibir recuperar senha
+    async exibe_recuperar_senha() {
+      this.show_form_login = false;
+      this.show_form_cadastro = false;
+      this.show_form_recuperar_senha = true;
+      this.show_btn_login = true;
+      this.show_btn_cadastro = true;
+      this.show_btn_recuperar_senha = false;
     },
   },
 });
