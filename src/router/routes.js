@@ -12,7 +12,10 @@ const routes = [
     path: "/",
     component: () => import("layouts/MainLayout.vue"),
     children: [
-      { path: "/cadastro", component: () => import("pages/IndexPage.vue") },
+      {
+        path: `/cadastro/:cnpj`,
+        component: () => import("pages/IndexPage.vue"),
+      },
     ],
     meta: { transition: "slide-left" },
   },
