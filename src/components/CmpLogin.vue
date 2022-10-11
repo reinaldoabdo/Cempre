@@ -76,6 +76,7 @@
                 v-model="form.cnpj"
                 type="text"
                 label="CNPJ"
+                mask="##.###.###/####-##"
               />
 
               <q-card-actions class="q-px-md">
@@ -163,16 +164,19 @@
 import { defineComponent, onMounted, ref } from "vue";
 import { useQuasar } from "quasar";
 import servAutenticacao from "src/services/ServAutenticacao.js";
+import helpers from "src/composables/Helpers.js";
 
 export default defineComponent({
   name: "CmpLogin",
   setup() {
     const serv = servAutenticacao();
+    const help = helpers();
     const $q = useQuasar();
     const form = ref({
       empresa: "",
       login: "",
       senha: "",
+      cnpj: "",
     });
     const show_form_login = ref(true);
     const show_form_cadastro = ref(false);
@@ -204,6 +208,7 @@ export default defineComponent({
       show_form_recuperar_senha,
       show_btn_recuperar_senha,
       serv,
+      help,
       form,
     };
   },
@@ -262,7 +267,31 @@ export default defineComponent({
       }
     },
     //Cadastrar
-    async cadastrar() {},
+    async cadastrar() {
+      //Validar cnpj
+      if (!this.form.cnpj || this.form.cnpj.length < 18) {
+        this.$q.notify({
+          type: "warning",
+          message: "Verifique o CNPJ - Faltando dígitos.",
+        });
+        return false;
+      }
+
+      if (this.help.validaCNPJ(this.form.cnpj) === false) {
+        this.$q.notify({
+          type: "warning",
+          message: "Verifique o CNPJ - Números incorretos.",
+        });
+        return false;
+      }
+
+      const cnpj = this.form.cnpj.replace(/[^\d]+/g, "");
+
+      //Manda para o formulário
+      this.$router.push(`cadastro/${cnpj}`);
+
+      return;
+    },
     // Botão exibir cadastro
     async exibe_cadastro() {
       this.show_form_cadastro = true;

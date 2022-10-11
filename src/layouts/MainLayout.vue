@@ -40,6 +40,7 @@
 <script>
 import { defineComponent, ref } from "vue";
 import EssentialLink from "components/EssentialLink.vue";
+import CmpCadastro from "components/CmpCadastro.vue";
 
 const linksList = [
   {
@@ -58,6 +59,7 @@ export default defineComponent({
 
   components: {
     EssentialLink,
+    CmpCadastro,
   },
 
   setup() {
