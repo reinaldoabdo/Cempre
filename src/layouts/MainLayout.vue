@@ -34,6 +34,8 @@
     <q-page-container>
       <router-view />
     </q-page-container>
+
+    <q-dialog v-show="false"> <CmpCadastro /></q-dialog>
   </q-layout>
 </template>
 

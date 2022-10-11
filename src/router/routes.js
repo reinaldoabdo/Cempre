@@ -14,7 +14,7 @@ const routes = [
     children: [
       {
         path: `/cadastro/:cnpj`,
-        component: () => import("pages/IndexPage.vue"),
+        component: () => import("pages/PagCadastro.vue"),
       },
     ],
     meta: { transition: "slide-left" },
