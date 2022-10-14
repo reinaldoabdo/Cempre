@@ -252,7 +252,7 @@ export default defineComponent({
           //Recupera a session
           const sessionx = JSON.parse(sessionStorage.getItem("sessionx"));
           sessionStorage.setItem("chave", sessionx.chave);
-          this.$router.push("cadastro");
+          this.$router.push(`cadastro/${sessionx.cnpj}`);
         } else {
           this.$q.notify({
             type: "negative",
