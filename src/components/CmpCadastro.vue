@@ -1,15 +1,12 @@
 <template>
-  <div class="q-ma-xs bg-secondary shadow-5">
-    <q-card class="q-pa-xs">
+  <div class="row">
+    <q-card class="q-ma-sm bg-red col-xs col-lg-8 shadow-5">
       <q-card-actions class="q-pa-none">
         <q-banner inline-actions class="q-ma-none fit">
           <div class="text-h6">Cadastro</div>
 
           <template v-slot:action>
-            <div
-              class="fixed-top-right z-top q-gutter-sm"
-              style="margin-top: 50px; margin-right: 10px"
-            >
+            <div class="fixed z-top q-gutter-sm">
               <q-btn
                 class="shadow-5"
                 round
@@ -42,7 +39,7 @@
             emit-value
             map-options
             label="Tipo de conta"
-            class="col q-pa-xs"
+            class="col-xs-12 col-sm-6 col-md-3 q-pa-xs"
             outlined
           >
           </q-select>
@@ -54,7 +51,7 @@
             emit-value
             map-options
             label="Tipo de empresa"
-            class="col q-pa-xs"
+            class="col-xs-12 col-sm-6 col-md-3 q-pa-xs"
             outlined
           >
           </q-select>
@@ -63,7 +60,7 @@
             dense
             label="Razão social"
             v-model="form.razao_social"
-            class="col-xs-12 col-md-6 col-lg-4 q-pa-xs"
+            class="col-xs-12 col-md-6 q-pa-xs"
             dark
             outlined
           />
@@ -71,7 +68,7 @@
             dense
             label="Nome fantasia"
             v-model="form.nome_fantasia"
-            class="col-xs-12 col-lg-4 q-pa-xs"
+            class="col-xs-12 col-md-5 q-pa-xs"
             outlined
           />
           <q-input
@@ -113,28 +110,28 @@
             dense
             label="País"
             v-model="form.pais"
-            class="col-xs-10 col-md-5 q-pa-xs"
+            class="col-xs-10 col-md q-pa-xs"
             outlined
           />
           <q-input
             dense
             label="Telefone"
             v-model="form.telefone"
-            class="col-xs-12 col-md-4 q-pa-xs"
+            class="col-xs-12 col-md q-pa-xs"
             outlined
           />
           <q-input
             dense
             label="CNPJ"
             v-model="form.cnpj"
-            class="col-xs-6 col-md-3 q-pa-xs"
+            class="col-xs-6 col-md q-pa-xs"
             outlined
           />
           <q-input
             dense
             label="Ins. Municipal"
             v-model="form.insc_municipal"
-            class="col-xs-6 col-md-5 q-pa-xs"
+            class="col-xs-6 col-md q-pa-xs"
             outlined
           />
           <div class="row q-ma-xs q-pa-xs bg-grey-7">
@@ -212,13 +209,17 @@
 </template>
 
 <script>
-import { defineComponent, onMounted, ref } from "vue";
+import { defineComponent, ref } from "vue";
+import { useRoute } from "vue-router";
 import { useQuasar } from "quasar";
+import servEmpresa from "src/services/ServEmpresa.js";
 
 export default defineComponent({
   name: "CmpCadastro",
+  props: ["query"],
   setup() {
     const $q = useQuasar();
+    const serv = servEmpresa();
     //
     $q.notify.setDefaults({
       position: "top",
@@ -226,7 +227,7 @@ export default defineComponent({
       textColor: "black",
     });
     const form = ref({
-      cdgTipoConta: 1,
+      cdg_tipo_conta: 1,
       cdg_tipo_empresa: 0,
       razao_social: "",
       nome_fantasia: "",
@@ -266,12 +267,17 @@ export default defineComponent({
       },
     ];
 
-    return { form, opt_tipo_conta, opt_tipo_empresa };
+    return { serv, form, opt_tipo_conta, opt_tipo_empresa };
   },
   methods: {
-    salvar_cadastro: () => {
+    salvar_cadastro() {
       //
       alert("Salvou");
+    },
+    //CONSULTAR CNPJ
+    consultar_cnpj() {
+      const route = useRoute();
+      this.serv.consultaCnpj(route.params);
     },
   },
   mounted() {
@@ -280,6 +286,9 @@ export default defineComponent({
       type: "positive",
       message: "Iniciou !!!",
     });
+
+    //
+    this.consultar_cnpj();
   },
 });
 </script>

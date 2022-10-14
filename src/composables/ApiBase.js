@@ -15,7 +15,7 @@ export default function apiBase() {
 
   // API ENVIAR
   const apiEnviar = async (chave, servico, dados) => {
-    if ((!chave && servico != "login") || !servico || !dados) {
+    if (!servico || !dados) {
       console.error(
         "***Faltando dados: composables/apiBase/apiEnviar((string)chave, (string)servico, (json)dados)"
       );
