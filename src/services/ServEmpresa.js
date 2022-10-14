@@ -22,30 +22,10 @@ export default function servEmpresa() {
       //console.log("sessionx", sessionStorage.getItem("sessionx"));
 
       const chave = "";
-      const servico = "aa_busca_empresa_por_cnpj";
-      //const res = await apiEnviar(chave, servico, dados);
+      const servico = "consultaCnpj";
+      const ret = await apiEnviar(chave, servico, dados);
 
-      const res = {
-        "NOME FANTASIA": "PEDRO SOFT",
-        "RAZAO SOCIAL": "PEDRO FERREIRA DE OLIVEIRA",
-        CNPJ: "24425732000191",
-        STATUS: "ATIVA",
-        "CNAE PRINCIPAL DESCRICAO":
-          "Reprodução de software em qualquer suporte",
-        "CNAE PRINCIPAL CODIGO": "1830003",
-        CEP: "79290000",
-        "DATA ABERTURA": "21/03/2016",
-        DDD: "67",
-        TELEFONE: "32551233",
-        EMAIL: "",
-        "TIPO LOGRADOURO": "RUA",
-        LOGRADOURO: "SENADOR FILINTO MULLER",
-        NUMERO: "1042",
-        COMPLEMENTO: "",
-        BAIRRO: "VILA AMERICA",
-        MUNICIPIO: "Bonito",
-        UF: "MS",
-      };
+      const res = Object.assign({}, ret.dados[0]);
 
       const res_padrao = {
         nome_fantasia: res["NOME FANTASIA"],
@@ -71,7 +51,9 @@ export default function servEmpresa() {
         uf: res["UF"],
       };
 
-      return res;
+      console.log("res_padrao", res_padrao);
+
+      return res_padrao;
     } catch (e) {
       throw new Error(e);
     }

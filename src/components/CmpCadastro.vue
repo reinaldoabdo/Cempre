@@ -10,6 +10,16 @@
               <q-btn
                 class="shadow-5"
                 round
+                color="yellow-9"
+                label="Tst"
+                @click="consultar_cnpj()"
+              >
+                <q-tooltip>Teste</q-tooltip>
+              </q-btn>
+
+              <q-btn
+                class="shadow-5"
+                round
                 color="blue"
                 icon="mdi-check"
                 @click="salvar_cadastro"
@@ -220,11 +230,13 @@ export default defineComponent({
   setup() {
     const $q = useQuasar();
     const serv = servEmpresa();
+    const route = useRoute();
     //
     $q.notify.setDefaults({
       position: "top",
       timeout: 2500,
       textColor: "black",
+      type: "warning",
     });
     const form = ref({
       cdg_tipo_conta: 1,
@@ -267,7 +279,7 @@ export default defineComponent({
       },
     ];
 
-    return { serv, form, opt_tipo_conta, opt_tipo_empresa };
+    return { serv, form, route, opt_tipo_conta, opt_tipo_empresa };
   },
   methods: {
     salvar_cadastro() {
@@ -275,9 +287,33 @@ export default defineComponent({
       alert("Salvou");
     },
     //CONSULTAR CNPJ
-    consultar_cnpj() {
-      const route = useRoute();
-      this.serv.consultaCnpj(route.params);
+    async consultar_cnpj() {
+      const ret = await this.serv.consultaCnpj(this.route.params);
+
+      this.form = {
+        cdg_tipo_conta: 1,
+        cdg_tipo_empresa: 0,
+        razao_social: ret.razao_social,
+        nome_fantasia: ret.nome_fantasia,
+        endereco: ret.endereco,
+        bairro: ret.bairro,
+        cep: ret.cep,
+        cidade: ret.cidade,
+        cnpj: ret.cnpj,
+        insc_municipal: "",
+        contato_financeiro: "",
+        telefone_financeiro: ret.telefone,
+        email_financeiro: "",
+        contato_comercial: "",
+        telefone_comercial: ret.telefone,
+        email_comercial: ret.email,
+        url: "http://www.",
+        nome_login: "",
+        uf: ret.uf,
+        pais: "Brasil",
+        telefone: ret.telefone,
+        situacao: ret.situacao,
+      };
     },
   },
   mounted() {
