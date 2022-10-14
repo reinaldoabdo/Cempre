@@ -21,7 +21,7 @@ export default function servAutenticacao() {
       }
 
       const chave = "";
-      const servico = "login";
+      const servico = "utilizadores_login";
       const res = await apiEnviar(chave, servico, dados);
 
       return res;
