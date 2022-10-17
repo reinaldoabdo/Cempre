@@ -207,7 +207,7 @@
           <q-input
             dense
             label="Login empresa"
-            v-model="form.nome_login"
+            v-model="form.login_empresa"
             class="col-xs-12 col-md-6 q-pa-xs q-mb-md"
             hint="Nome de login da empresa para ser usado em conjunto com nome e senha do usuário."
             outlined
@@ -256,7 +256,7 @@ export default defineComponent({
       telefone_comercial: "",
       email_comercial: "",
       url: "",
-      nome_login: "",
+      login_empresa: "",
       uf: "",
       pais: "",
       telefone: "",
@@ -282,12 +282,74 @@ export default defineComponent({
     return { serv, form, route, opt_tipo_conta, opt_tipo_empresa };
   },
   methods: {
-    salvar_cadastro() {
-      //
-      alert("Salvou");
+    async salvar_cadastro() {
+      const campos = [
+        "cdg_tipo_conta",
+        "cdg_tipo_empresa",
+        "razao_social",
+        "nome_fantasia",
+        "endereco",
+        "bairro",
+        "cep",
+        "cidade",
+        "cnpj",
+        "insc_municipal",
+        "contato_financeiro",
+        "telefone_financeiro",
+        "email_financeiro",
+        "contato_comercial",
+        "telefone_comercial",
+        "email_comercial",
+        "url",
+        "login_empresa",
+        "uf",
+        "pais",
+        "telefone",
+        "situacao",
+      ];
+      const opcionais = [
+        "insc_municipal",
+        "contato_financeiro",
+        "telefone_financeiro",
+        "email_financeiro",
+        "contato_comercial",
+        "telefone_comercial",
+        "email_comercial",
+        "url",
+        "pais",
+        "situacao",
+      ];
+
+      for (var i in campos) {
+        const campo = campos[i];
+
+        if (opcionais.indexOf(campo) > -1) {
+          continue;
+        }
+
+        if (
+          (this.form[campo] != 0 && !this.form[campo]) ||
+          this.form[campo].length < 1
+        ) {
+          let nome_campo = campo.replace("_", " ");
+          nome_campo = nome_campo.toLocaleUpperCase();
+          const msg = "Preencha o campo " + nome_campo;
+          this.$q.notify({
+            type: "negative",
+            message: msg,
+          });
+          return false;
+        }
+      }
+
+      this.$q.loading.show();
+      const ret = await this.serv.cadastrarEmpresa(this.form);
+      this.$q.loading.hide();
     },
     //CONSULTAR CNPJ
     async consultar_cnpj() {
+      this.$q.loading.show();
+
       const ret = await this.serv.consultaCnpj(this.route.params);
 
       this.form = {
@@ -308,12 +370,14 @@ export default defineComponent({
         telefone_comercial: ret.telefone,
         email_comercial: ret.email,
         url: "http://www.",
-        nome_login: "",
+        login_empresa: "",
         uf: ret.uf,
         pais: "Brasil",
         telefone: ret.telefone,
         situacao: ret.situacao,
       };
+
+      this.$q.loading.hide();
     },
   },
   mounted() {
