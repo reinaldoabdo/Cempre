@@ -46,8 +46,16 @@ import CmpCadastro from "components/CmpCadastro.vue";
 
 const linksList = [
   {
-    title: "Cadastro",
+    title: "Cadastro da empresa",
+    icon: "mdi-database-plus",
+  },
+  {
+    title: "Cadastro de usuário",
     icon: "mdi-account-plus",
+  },
+  {
+    title: "Enviar convite",
+    icon: "mdi-mail",
   },
 
   {
