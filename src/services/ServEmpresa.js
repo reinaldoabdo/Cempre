@@ -14,22 +14,59 @@ export default function servEmpresa() {
    */
   const consultaCnpj = async (dados) => {
     try {
-      const campos = ["cnpj"];
+      const campos = ["cnpj", "chave", "cdg_empresa", "cdg_utilizador"];
       const opcionais = [];
+
+      console.log("empresa_existePorCnpj", dados);
 
       for (var i in campos) {
         const campo = campos[i];
-        if (!dados[campo] || dados[campo].length < 3) {
+        if ((dados[campo] != 0 && !dados[campo]) || dados[campo].length < 1) {
           throw new Error(nomeServ + ": Faltando o campo " + campo);
         }
       }
 
-      //console.log("sessionx", sessionStorage.getItem("sessionx"));
+      const chave = dados.chave;
+      const servicoA = "empresa_existePorCnpj";
+      const retA = await apiEnviar(chave, servicoA, dados);
 
-      const chave = "";
+      console.log("***log: ", retA);
+
+      // A empresa já existe
+      if (retA.info[0].registros > 0) {
+        const resA = retA.dados[0];
+
+        const res_padrao = {
+          nome_fantasia: retA["xx"],
+          razao_social: res["RAZAO SOCIAL"],
+          cnpj: res["CNPJ"],
+          situacao: res["STATUS"],
+          cnae_descricao: res["CNAE PRINCIPAL DESCRICAO"],
+          cnae_codigo: res["CNAE PRINCIPAL CODIGO"],
+          cep: res["CEP"],
+          data_abertura: res["DATA ABERTURA"],
+          telefone: "(" + res["DDD"] + ")" + res["TELEFONE"],
+          email: res["EMAIL"],
+          endereco:
+            res["TIPO LOGRADOURO"] +
+            " " +
+            res["LOGRADOURO"] +
+            " " +
+            res["NUMERO"] +
+            " " +
+            res["COMPLEMENTO"],
+          bairro: res["BAIRRO"],
+          cidade: res["MUNICIPIO"],
+          uf: res["UF"],
+        };
+      }
+
+      return;
+
+      console.log("consultaCnpjExiste: ", retA);
+
       const servico = "consultaCnpj";
       const ret = await apiEnviar(chave, servico, dados);
-
       const res = Object.assign({}, ret.dados[0]);
 
       const res_padrao = {

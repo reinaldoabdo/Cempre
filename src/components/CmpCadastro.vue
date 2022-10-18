@@ -3,7 +3,7 @@
     <q-card class="q-ma-sm bg-red col-xs col-lg-8 shadow-5">
       <q-card-actions class="q-pa-none">
         <q-banner inline-actions class="q-ma-none fit">
-          <div class="text-h6">Cadastro</div>
+          <div class="text-h6">Cadastro da empresa</div>
 
           <template v-slot:action>
             <div class="fixed z-top q-gutter-sm">
@@ -223,14 +223,17 @@ import { defineComponent, ref } from "vue";
 import { useRoute } from "vue-router";
 import { useQuasar } from "quasar";
 import servEmpresa from "src/services/ServEmpresa.js";
+import servAutenticacao from "src/services/ServAutenticacao.js";
 
 export default defineComponent({
   name: "CmpCadastro",
   props: ["query"],
   setup() {
     const $q = useQuasar();
-    const serv = servEmpresa();
+    const servE = servEmpresa();
+    const servA = servAutenticacao();
     const route = useRoute();
+    const dadosFake = ref(null);
     //
     $q.notify.setDefaults({
       position: "top",
@@ -247,7 +250,7 @@ export default defineComponent({
       bairro: "",
       cep: "",
       cidade: "",
-      cnpj: "",
+      cnpj: route.params.cnpj,
       insc_municipal: "",
       contato_financeiro: "",
       telefone_financeiro: "",
@@ -279,9 +282,44 @@ export default defineComponent({
       },
     ];
 
-    return { serv, form, route, opt_tipo_conta, opt_tipo_empresa };
+    return {
+      servE,
+      servA,
+      form,
+      route,
+      dadosFake,
+      opt_tipo_conta,
+      opt_tipo_empresa,
+    };
   },
   methods: {
+    /**
+     * FAKE LOGIN
+     * Se causar problema de segurança, enviar para o backend.
+     * Só adicionar login com poucas permissões
+     */
+    async fakeLogin() {
+      const dados = {
+        empresa: "abaetur",
+        login: "reinaldo",
+        senha: "r142536",
+      };
+
+      const resA = await this.servA.autenticacaoLogin(dados);
+
+      if (resA.dados[0]) {
+        this.dadosFake = resA.dados[0];
+      } else {
+        const msg = "Erro ao fazer a autenticação temporária";
+        this.$q.notify({
+          type: "negative",
+          message: msg,
+        });
+        return false;
+      }
+
+      console.log("FakeLogin", resA);
+    },
     async salvar_cadastro() {
       const campos = [
         "cdg_tipo_conta",
@@ -343,14 +381,23 @@ export default defineComponent({
       }
 
       this.$q.loading.show();
-      const ret = await this.serv.cadastrarEmpresa(this.form);
+      const ret = await this.servE.cadastrarEmpresa(this.form);
       this.$q.loading.hide();
     },
     //CONSULTAR CNPJ
     async consultar_cnpj() {
       this.$q.loading.show();
 
-      const ret = await this.serv.consultaCnpj(this.route.params);
+      console.log("this.dadosFake: ", this.dadosFake);
+
+      const dados = {
+        chave: this.dadosFake.chave,
+        cnpj: this.form.cnpj,
+        cdg_empresa: this.dadosFake.cdg_empresa,
+        cdg_utilizador: this.dadosFake.cdg_utilizador,
+      };
+
+      const ret = await this.servE.consultaCnpj(dados);
 
       this.form = {
         cdg_tipo_conta: 1,
@@ -369,7 +416,7 @@ export default defineComponent({
         contato_comercial: "",
         telefone_comercial: ret.telefone,
         email_comercial: ret.email,
-        url: "http://www.",
+        url: "",
         login_empresa: "",
         uf: ret.uf,
         pais: "Brasil",
@@ -380,12 +427,14 @@ export default defineComponent({
       this.$q.loading.hide();
     },
   },
-  mounted() {
+  async mounted() {
     //
     this.$q.notify({
       type: "positive",
       message: "Iniciou !!!",
     });
+
+    await this.fakeLogin();
 
     //
     this.consultar_cnpj();
