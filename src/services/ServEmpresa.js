@@ -30,56 +30,54 @@ export default function servEmpresa() {
       const servicoA = "empresa_existePorCnpj";
       const retA = await apiEnviar(chave, servicoA, dados);
 
-      console.log("***log: ", retA);
-
       // A empresa já existe
       if (retA.info[0].registros > 0) {
         const resA = retA.dados[0];
 
+        console.log("***resA: ", resA);
+
         const res_padrao = {
-          nome_fantasia: retA["xx"],
-          razao_social: res["RAZAO SOCIAL"],
-          cnpj: res["CNPJ"],
-          situacao: res["STATUS"],
-          cnae_descricao: res["CNAE PRINCIPAL DESCRICAO"],
-          cnae_codigo: res["CNAE PRINCIPAL CODIGO"],
-          cep: res["CEP"],
-          data_abertura: res["DATA ABERTURA"],
-          telefone: "(" + res["DDD"] + ")" + res["TELEFONE"],
-          email: res["EMAIL"],
-          endereco:
-            res["TIPO LOGRADOURO"] +
-            " " +
-            res["LOGRADOURO"] +
-            " " +
-            res["NUMERO"] +
-            " " +
-            res["COMPLEMENTO"],
-          bairro: res["BAIRRO"],
-          cidade: res["MUNICIPIO"],
-          uf: res["UF"],
+          existe: 1,
+          bairro: resA.bairro,
+          cdgbtms: resA.cdgbtms,
+          cep: resA.cep,
+          cidade: resA.cidade,
+          cnpj: resA.cnpj,
+          complemento: resA.complemento,
+          contato_comercial: resA.contato_comercial,
+          contato_financeiro: resA.contato_financeiro,
+          email_comercial: resA.email_comercial,
+          email_financeiro: resA.email_financeiro,
+          endereco: resA.endereco,
+          insc_municipal: resA.insc_municipal,
+          login_empresa: resA.nome_login,
+          razao_social: resA.razao_social,
+          nome_fantasia: resA.nome,
+          telefone_comercial: resA.telefone_comercial,
+          telefone_financeiro: resA.telefone_financeiro,
+          uf: resA.uf,
+          url: resA.url,
         };
+
+        return res_padrao;
       }
-
-      return;
-
-      console.log("consultaCnpjExiste: ", retA);
 
       const servico = "consultaCnpj";
       const ret = await apiEnviar(chave, servico, dados);
       const res = Object.assign({}, ret.dados[0]);
 
       const res_padrao = {
-        nome_fantasia: res["NOME FANTASIA"],
-        razao_social: res["RAZAO SOCIAL"],
-        cnpj: res["CNPJ"],
-        situacao: res["STATUS"],
-        cnae_descricao: res["CNAE PRINCIPAL DESCRICAO"],
-        cnae_codigo: res["CNAE PRINCIPAL CODIGO"],
+        existe: 0,
+        bairro: res["BAIRRO"],
+        cdgbtms: "",
         cep: res["CEP"],
-        data_abertura: res["DATA ABERTURA"],
-        telefone: "(" + res["DDD"] + ")" + res["TELEFONE"],
-        email: res["EMAIL"],
+        cidade: res["MUNICIPIO"],
+        cnpj: res["CNPJ"],
+        complemento: "",
+        contato_comercial: "",
+        contato_financeiro: "",
+        email_comercial: res["EMAIL"],
+        email_financeiro: res["EMAIL"],
         endereco:
           res["TIPO LOGRADOURO"] +
           " " +
@@ -88,9 +86,14 @@ export default function servEmpresa() {
           res["NUMERO"] +
           " " +
           res["COMPLEMENTO"],
-        bairro: res["BAIRRO"],
-        cidade: res["MUNICIPIO"],
+        insc_municipal: "",
+        login_empresa: "",
+        razao_social: res["RAZAO SOCIAL"],
+        nome_fantasia: res["NOME FANTASIA"],
+        telefone_comercial: "(" + res["DDD"] + ")" + res["TELEFONE"],
+        telefone_financeiro: "(" + res["DDD"] + ")" + res["TELEFONE"],
         uf: res["UF"],
+        url: "",
       };
 
       console.log("res_padrao", res_padrao);

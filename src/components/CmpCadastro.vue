@@ -399,6 +399,15 @@ export default defineComponent({
 
       const ret = await this.servE.consultaCnpj(dados);
 
+      console.log("***log: ", ret);
+
+      if (ret.existe === 1) {
+        this.$q.notify({
+          type: "positive",
+          message: "Esta empresa já está cadastrada.",
+        });
+      }
+
       this.form = {
         cdg_tipo_conta: 1,
         cdg_tipo_empresa: 0,
@@ -409,20 +418,21 @@ export default defineComponent({
         cep: ret.cep,
         cidade: ret.cidade,
         cnpj: ret.cnpj,
-        insc_municipal: "",
-        contato_financeiro: "",
-        telefone_financeiro: ret.telefone,
-        email_financeiro: "",
-        contato_comercial: "",
-        telefone_comercial: ret.telefone,
-        email_comercial: ret.email,
-        url: "",
-        login_empresa: "",
+        insc_municipal: ret.insc_municipal,
+        contato_financeiro: ret.contato_financeiro,
+        telefone_financeiro: ret.telefone_financeiro,
+        email_financeiro: ret.email_financeiro,
+        contato_comercial: ret.contato_comercial,
+        telefone_comercial: ret.telefone_comercial,
+        email_comercial: ret.email_comercial,
+        url: ret.url,
+        login_empresa: ret.login_empresa,
         uf: ret.uf,
-        pais: "Brasil",
+        pais: ret.pais,
         telefone: ret.telefone,
-        situacao: ret.situacao,
       };
+
+      console.log("FORM", this.form);
 
       this.$q.loading.hide();
     },
