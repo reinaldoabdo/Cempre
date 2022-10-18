@@ -39,28 +39,35 @@ export default function apiBase() {
         //
         console.log("<<<Resposta<<< (" + servico + "): ", resposta);
 
+        var ret = {};
+
         if (resposta.data && resposta.data.info) {
           const info = resposta.data.info[0];
           if (info.cdg_erro > 0) {
             throw new Error(info.msg);
           }
+          ret = resposta.data;
+        } else if (resposta.dados && resposta.info) {
+          const info = resposta.info[0];
+          if (info.cdg_erro > 0) {
+            throw new Error(info.msg);
+          }
+          ret = resposta;
         }
-        return resposta.data;
+        return ret;
       })
       .catch(function (e) {
         console.error(">>>Err (" + servico + "): ", e);
         return e;
       });
 
-    console.log("---Retorno", retorno);
+    console.log("<==|Retorno", retorno);
 
     if (retorno && retorno.message && retorno.message.length > 0) {
       resposta.info[0].msg = retorno.message;
     }
 
-    resposta.dados = retorno.dados;
-
-    return resposta;
+    return retorno;
   };
 
   return {
