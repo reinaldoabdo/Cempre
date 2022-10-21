@@ -110,8 +110,13 @@ export default function servEmpresa() {
    * @returns
    */
   const cadastrarEmpresa = async (dados) => {
+    console.log("cadastrarEmpresa: ", dados);
+
     try {
       const campos = [
+        "chave",
+        "cdg_utilizador",
+        "cdg_empresa",
         "cdg_tipo_conta",
         "cdg_tipo_empresa",
         "razao_social",
@@ -135,6 +140,7 @@ export default function servEmpresa() {
         "telefone",
         "situacao",
       ];
+
       const opcionais = [
         "insc_municipal",
         "contato_financeiro",
@@ -155,19 +161,40 @@ export default function servEmpresa() {
           continue;
         }
 
-        if (!dados[campo] || dados[campo].length < 1) {
+        if ((!dados[campo] && dados[campo] != 0) || dados[campo].length < 1) {
           throw new Error(nomeServ + ": Faltando o campo " + campo);
         }
       }
 
-      alert("passou");
+      // O servidor espera os campos a seguir:
+      // 'cdg_empresa', 'cdg_utilizador', 'razao_social', 'nome', 'nome_login', 'endereco', 'complemento', 'bairro', 'cep', 'cidade', 'uf', 'telefone_comercial', 'telefone_financeiro', 'email_financeiro', 'email_comercial', 'fax','url', 'cnpj', 'insc_municipal', 'insc_estadual', 'reg_embratur'
 
-      return;
-      const chave = "";
-      const servico = "cadastrarEmpresa";
+      dados.nome = dados.razao_social;
+      dados.nome_login = dados.login_empresa;
+      if (dados.telefone_comercial.length < 8) {
+        dados.telefone_comercial = dados.telefone;
+      }
+      if (dados.telefone_financeiro.length < 8) {
+        dados.telefone_financeiro = dados.telefone;
+      }
+      dados.fax = "";
+      dados.complemento = "";
+      dados.insc_estadual = "";
+      dados.reg_embratur = "";
+
+      const sess = sessionStorage.getItem("sessionx");
+
+      if (!sess || sess == null || sess.chave == undefined) {
+        dados.cod_empresa = "0";
+      } else {
+        dados.cod_empresa = sess.cdg_empresa;
+      }
+
+      console.log("***log: dados", dados);
+
+      const chave = dados.chave;
+      const servico = "empresa_salva";
       const ret = await apiEnviar(chave, servico, dados);
-
-      console.log("ret", ret);
 
       return ret;
     } catch (e) {

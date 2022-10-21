@@ -161,7 +161,7 @@
 </template>
 
 <script>
-import { defineComponent, onMounted, ref } from "vue";
+import { defineComponent, ref } from "vue";
 import { useQuasar } from "quasar";
 import servAutenticacao from "src/services/ServAutenticacao.js";
 import helpers from "src/composables/Helpers.js";
@@ -191,14 +191,6 @@ export default defineComponent({
       timeout: 2500,
       textColor: "black",
     });
-    // Mounted
-    onMounted(() => {
-      //autenticar();
-      $q.notify({
-        type: "positive",
-        message: "Iniciou !!!",
-      });
-    });
 
     return {
       show_btn_cadastro,
@@ -211,6 +203,13 @@ export default defineComponent({
       help,
       form,
     };
+  },
+  mounted() {
+    sessionStorage.setItem("sessionx", false);
+    this.$q.notify({
+      type: "positive",
+      message: "Iniciou !!!",
+    });
   },
   // Methods
   methods: {

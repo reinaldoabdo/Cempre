@@ -50,10 +50,6 @@ const linksList = [
     icon: "mdi-database-plus",
   },
   {
-    title: "Cadastro de usuário",
-    icon: "mdi-account-plus",
-  },
-  {
     title: "Enviar convite",
     icon: "mdi-mail",
   },

@@ -1,18 +1,6 @@
 import { apiCempre } from "src/boot/axios";
 
 export default function apiBase() {
-  // Esquema padrão
-  const resposta = {
-    info: [
-      {
-        cdg_msg: 0,
-        msg: "",
-        registros: 0,
-      },
-    ],
-    dados: [],
-  };
-
   // API ENVIAR
   const apiEnviar = async (chave, servico, dados) => {
     if (!servico || !dados) {
@@ -57,15 +45,22 @@ export default function apiBase() {
         return ret;
       })
       .catch(function (e) {
-        console.error(">>>Err (" + servico + "): ", e);
-        return e;
+        console.log(">>>Err (" + servico + "): ", e);
+        // Esquema padrão
+        const resposta = {
+          info: [
+            {
+              cdg_msg: "9999",
+              msg: "ApiBase: " + e,
+              registros: 0,
+            },
+          ],
+          dados: [],
+        };
+        return resposta;
       });
 
     console.log("<==|Retorno", retorno);
-
-    if (retorno && retorno.message && retorno.message.length > 0) {
-      resposta.info[0].msg = retorno.message;
-    }
 
     return retorno;
   };

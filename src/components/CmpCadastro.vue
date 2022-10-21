@@ -10,30 +10,11 @@
               <q-btn
                 class="shadow-5"
                 round
-                color="yellow-9"
-                label="Tst"
-                @click="consultar_cnpj()"
-              >
-                <q-tooltip>Teste</q-tooltip>
-              </q-btn>
-
-              <q-btn
-                class="shadow-5"
-                round
                 color="blue"
                 icon="mdi-check"
                 @click="salvar_cadastro"
               >
                 <q-tooltip>Salvar</q-tooltip>
-              </q-btn>
-              <q-btn
-                class="shadow-5"
-                round
-                color="red"
-                icon="close"
-                v-close-popup
-              >
-                <q-tooltip>Fechar</q-tooltip>
               </q-btn>
             </div>
           </template>
@@ -229,11 +210,12 @@ export default defineComponent({
   name: "CmpCadastro",
   props: ["query"],
   setup() {
+    const session = JSON.parse(sessionStorage.getItem("sessionx"));
     const $q = useQuasar();
     const servE = servEmpresa();
     const servA = servAutenticacao();
     const route = useRoute();
-    const dadosFake = ref(null);
+    const dadosFake = ref();
     //
     $q.notify.setDefaults({
       position: "top",
@@ -283,6 +265,7 @@ export default defineComponent({
     ];
 
     return {
+      session,
       servE,
       servA,
       form,
@@ -320,6 +303,9 @@ export default defineComponent({
 
       console.log("FakeLogin", resA);
     },
+    /**
+     * SALVAR CADASTRO
+     */
     async salvar_cadastro() {
       const campos = [
         "cdg_tipo_conta",
@@ -380,32 +366,71 @@ export default defineComponent({
         }
       }
 
+      sessionStorage.setItem("sform", JSON.stringify(this.form));
+
+      console.log("***log: this.dadosFake", this.dadosFake);
+
+      if (this.session.chave == undefined) {
+        this.form.chave = this.dadosFake.chave;
+        this.form.cdg_empresa = this.dadosFake.cdg_empresa;
+        this.form.cdg_utilizador = this.dadosFake.cdg_utilizador;
+      } else {
+        this.form.chave = this.session.chave;
+        this.form.cdg_empresa = this.session.cdg_empresa;
+        this.form.cdg_utilizador = this.session.cdg_utilizador;
+      }
+
       this.$q.loading.show();
       const ret = await this.servE.cadastrarEmpresa(this.form);
       this.$q.loading.hide();
+
+      if (ret.info[0].msg) {
+        this.$q.notify({
+          type: "negative",
+          message: ret.info[0].msg,
+        });
+      }
     },
     //CONSULTAR CNPJ
     async consultar_cnpj() {
-      this.$q.loading.show();
-
       console.log("this.dadosFake: ", this.dadosFake);
 
-      const dados = {
-        chave: this.dadosFake.chave,
-        cnpj: this.form.cnpj,
-        cdg_empresa: this.dadosFake.cdg_empresa,
-        cdg_utilizador: this.dadosFake.cdg_utilizador,
-      };
+      let dados = {};
 
+      if (this.dadosFake !== undefined) {
+        dados = {
+          chave: this.dadosFake.chave,
+          cnpj: this.form.cnpj,
+          cdg_empresa: this.dadosFake.cdg_empresa,
+          cdg_utilizador: this.dadosFake.cdg_utilizador,
+        };
+      } else {
+        dados = {
+          chave: this.session.chave,
+          cnpj: this.session.cnpj,
+          cdg_empresa: this.session.cdg_empresa,
+          cdg_utilizador: this.session.cdg_utilizador,
+        };
+      }
+
+      this.$q.loading.show();
       const ret = await this.servE.consultaCnpj(dados);
-
-      console.log("***log: ", ret);
+      this.$q.loading.hide();
 
       if (ret.existe === 1) {
-        this.$q.notify({
-          type: "positive",
-          message: "Esta empresa já está cadastrada.",
-        });
+        if (this.session.chave == undefined) {
+          this.$q.notify({
+            type: "warning",
+            message: "Esta empresa já está cadastrada. Faça o login.",
+          });
+          //this.$router.push("/login");
+          return;
+        } else {
+          this.$q.notify({
+            type: "positive",
+            message: "Bem-vindo(a)!",
+          });
+        }
       }
 
       this.form = {
@@ -433,18 +458,14 @@ export default defineComponent({
       };
 
       console.log("FORM", this.form);
-
-      this.$q.loading.hide();
     },
   },
   async mounted() {
     //
-    this.$q.notify({
-      type: "positive",
-      message: "Iniciou !!!",
-    });
 
-    await this.fakeLogin();
+    if (this.session.chave == undefined) {
+      await this.fakeLogin();
+    }
 
     //
     this.consultar_cnpj();
