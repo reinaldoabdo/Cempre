@@ -262,6 +262,14 @@ export default defineComponent({
         label: "Ag. de Turismo",
         value: 0,
       },
+      {
+        label: "Atrativo",
+        value: 1,
+      },
+      {
+        label: "Transporte",
+        value: 2,
+      },
     ];
 
     return {
@@ -433,9 +441,20 @@ export default defineComponent({
         }
       }
 
+      console.log("RREET", ret);
+
+      let cdg_tipo_empresa;
+      if (ret.agencia == 1) {
+        cdg_tipo_empresa = 0;
+      } else if (ret.atrativo == 1) {
+        cdg_tipo_empresa = 1;
+      } else if (ret.transporte == 1) {
+        cdg_tipo_empresa = 2;
+      }
+
       this.form = {
         cdg_tipo_conta: 1,
-        cdg_tipo_empresa: 0,
+        cdg_tipo_empresa: cdg_tipo_empresa,
         razao_social: ret.razao_social,
         nome_fantasia: ret.nome_fantasia,
         endereco: ret.endereco,

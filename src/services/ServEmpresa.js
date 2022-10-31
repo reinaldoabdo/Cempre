@@ -1,4 +1,3 @@
-import { ref } from "vue";
 import apiBase from "src/composables/ApiBase";
 
 const { apiEnviar } = apiBase();
@@ -26,6 +25,33 @@ export default function servEmpresa() {
         }
       }
 
+      let res_padrao = {
+        existe: 0,
+        bairro: "",
+        cdgbtms: "",
+        cep: "",
+        cidade: "",
+        cnpj: "",
+        complemento: "",
+        contato_comercial: "",
+        contato_financeiro: "",
+        email_comercial: "",
+        email_financeiro: "",
+        endereco: "",
+        insc_municipal: "",
+        login_empresa: "",
+        razao_social: "",
+        nome_fantasia: "",
+        telefone_comercial: "",
+        telefone_financeiro: "",
+        telefone: "",
+        uf: "",
+        url: "",
+        agencia: "0",
+        atrativo: "0",
+        transporte: "0",
+      };
+
       const chave = dados.chave;
       const servicoA = "empresa_existePorCnpj";
       const retA = await apiEnviar(chave, servicoA, dados);
@@ -36,7 +62,7 @@ export default function servEmpresa() {
 
         console.log("***resA: ", resA);
 
-        const res_padrao = {
+        res_padrao = {
           existe: 1,
           bairro: resA.bairro,
           cdgbtms: resA.cdgbtms,
@@ -55,8 +81,15 @@ export default function servEmpresa() {
           nome_fantasia: resA.nome,
           telefone_comercial: resA.telefone_comercial,
           telefone_financeiro: resA.telefone_financeiro,
+          telefone:
+            resA.telefone_comercial.length > 3
+              ? resA.telefone_comercial
+              : resA.telefone_financeiro,
           uf: resA.uf,
           url: resA.url,
+          agencia: resA.agencia,
+          atrativo: resA.atrativo,
+          transporte: resA.transporte,
         };
 
         return res_padrao;
@@ -66,35 +99,32 @@ export default function servEmpresa() {
       const ret = await apiEnviar(chave, servico, dados);
       const res = Object.assign({}, ret.dados[0]);
 
-      const res_padrao = {
-        existe: 0,
-        bairro: res["BAIRRO"],
-        cdgbtms: "",
-        cep: res["CEP"],
-        cidade: res["MUNICIPIO"],
-        cnpj: res["CNPJ"],
-        complemento: "",
-        contato_comercial: "",
-        contato_financeiro: "",
-        email_comercial: res["EMAIL"],
-        email_financeiro: res["EMAIL"],
-        endereco:
-          res["TIPO LOGRADOURO"] +
-          " " +
-          res["LOGRADOURO"] +
-          " " +
-          res["NUMERO"] +
-          " " +
-          res["COMPLEMENTO"],
-        insc_municipal: "",
-        login_empresa: "",
-        razao_social: res["RAZAO SOCIAL"],
-        nome_fantasia: res["NOME FANTASIA"],
-        telefone_comercial: "(" + res["DDD"] + ")" + res["TELEFONE"],
-        telefone_financeiro: "(" + res["DDD"] + ")" + res["TELEFONE"],
-        uf: res["UF"],
-        url: "",
-      };
+      console.log("res--", res);
+
+      if (!res.error) {
+        res_padrao = {
+          bairro: res["BAIRRO"],
+          cep: res["CEP"],
+          cidade: res["MUNICIPIO"],
+          cnpj: res["CNPJ"],
+          email_comercial: res["EMAIL"],
+          email_financeiro: res["EMAIL"],
+          endereco:
+            res["TIPO LOGRADOURO"] +
+            " " +
+            res["LOGRADOURO"] +
+            " " +
+            res["NUMERO"] +
+            " " +
+            res["COMPLEMENTO"],
+          razao_social: res["RAZAO SOCIAL"],
+          nome_fantasia: res["NOME FANTASIA"],
+          telefone_comercial: "(" + res["DDD"] + ")" + res["TELEFONE"],
+          telefone_financeiro: "(" + res["DDD"] + ")" + res["TELEFONE"],
+          telefone: "(" + res["DDD"] + ")" + res["TELEFONE"],
+          uf: res["UF"],
+        };
+      }
 
       console.log("res_padrao", res_padrao);
 
@@ -156,6 +186,10 @@ export default function servEmpresa() {
 
       for (var i in campos) {
         const campo = campos[i];
+
+        if (typeof dados[campo] === "undefined") {
+          dados[campo] = "";
+        }
 
         if (opcionais.indexOf(campo) > -1) {
           continue;
