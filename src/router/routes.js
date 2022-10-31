@@ -19,6 +19,17 @@ const routes = [
     ],
     meta: { transition: "slide-left" },
   },
+  {
+    path: "/",
+    component: () => import("layouts/MainLayout.vue"),
+    children: [
+      {
+        path: `/convites`,
+        component: () => import("pages/PagConvites.vue"),
+      },
+    ],
+    meta: { transition: "slide-left" },
+  },
 
   // Always leave this as last one,
   // but you can also remove it

@@ -44,14 +44,18 @@ import { defineComponent, ref } from "vue";
 import EssentialLink from "components/EssentialLink.vue";
 import CmpCadastro from "components/CmpCadastro.vue";
 
+const session = JSON.parse(sessionStorage.getItem("sessionx"));
+
 const linksList = [
   {
     title: "Cadastro da empresa",
     icon: "mdi-database-plus",
+    link: "/cadastro/" + session.cnpj,
   },
   {
     title: "Enviar convite",
     icon: "mdi-mail",
+    link: "/convites",
   },
 
   {
