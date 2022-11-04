@@ -26,6 +26,8 @@ export default function servEmpresa() {
       }
 
       let res_padrao = {
+        cdg_tipo_conta: 1,
+        cdg_tipo_empresa: 0,
         existe: 0,
         bairro: "",
         cdgbtms: "",
@@ -50,6 +52,9 @@ export default function servEmpresa() {
         agencia: "0",
         atrativo: "0",
         transporte: "0",
+        usuario: "",
+        senha: "",
+        repetir_senha: "",
       };
 
       const chave = dados.chave;
@@ -63,6 +68,8 @@ export default function servEmpresa() {
         console.log("***resA: ", resA);
 
         res_padrao = {
+          cdg_tipo_conta: 1,
+          cdg_tipo_empresa: 0,
           existe: 1,
           bairro: resA.bairro,
           cdgbtms: resA.cdgbtms,
@@ -90,6 +97,9 @@ export default function servEmpresa() {
           agencia: resA.agencia,
           atrativo: resA.atrativo,
           transporte: resA.transporte,
+          usuario: "",
+          senha: "",
+          repetir_senha: "",
         };
 
         return res_padrao;
@@ -169,6 +179,9 @@ export default function servEmpresa() {
         "pais",
         "telefone",
         "situacao",
+        "usuario",
+        "senha",
+        "repetir_senha",
       ];
 
       const opcionais = [
@@ -201,7 +214,10 @@ export default function servEmpresa() {
       }
 
       // O servidor espera os campos a seguir:
-      // 'cdg_empresa', 'cdg_utilizador', 'razao_social', 'nome', 'nome_login', 'endereco', 'complemento', 'bairro', 'cep', 'cidade', 'uf', 'telefone_comercial', 'telefone_financeiro', 'email_financeiro', 'email_comercial', 'fax','url', 'cnpj', 'insc_municipal', 'insc_estadual', 'reg_embratur'
+      // 'cdg_empresa', 'cdg_utilizador', 'razao_social', 'nome', 'nome_login',
+      // 'endereco', 'complemento', 'bairro', 'cep', 'cidade', 'uf', 'telefone_comercial',
+      // 'telefone_financeiro', 'email_financeiro', 'email_comercial', 'fax','url', 'cnpj', '
+      // insc_municipal', 'insc_estadual', 'reg_embratur', 'usuario', 'senha', 'repetir_senha'
 
       dados.nome = dados.razao_social;
       dados.nome_login = dados.login_empresa;

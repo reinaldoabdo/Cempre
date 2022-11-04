@@ -42,6 +42,10 @@
     </q-page-container>
 
     <q-dialog v-show="false"> <CmpCadastro /></q-dialog>
+
+    <q-footer class="text-center text-dark">
+      &copy;2022 BTMS - Cempre - Todos os direitos reservados.
+    </q-footer>
   </q-layout>
 </template>
 

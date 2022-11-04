@@ -182,17 +182,67 @@
             dense
             label="Site"
             v-model="form.url"
-            class="col-xs-12 col-md-6 q-pa-xs"
+            class="col-xs-12 col-sm q-pa-xs"
             outlined
           />
           <q-input
             dense
             label="Login empresa"
             v-model="form.login_empresa"
-            class="col-xs-12 col-md-6 q-pa-xs q-mb-md"
-            hint="Nome de login da empresa para ser usado em conjunto com nome e senha do usuário."
+            class="col-xs-12 col-sm q-ma-xs"
+            hint="Para ser usado em conjunto com nome e senha do usuário."
             outlined
           />
+        </div>
+
+        <div class="row">
+          <q-input
+            dense
+            label="Usuário"
+            v-model="form.usuario"
+            class="col-xs-12 col-sm q-ma-xs"
+            outlined
+          />
+          <q-input
+            :type="tipo_password ? 'password' : 'text'"
+            dense
+            label="Senha"
+            v-model="form.senha"
+            class="col-xs-12 col-sm q-ma-xs"
+            outlined
+            hint="No mínimo 6 caracteres."
+          >
+            <template v-slot:append>
+              <q-icon
+                :name="tipo_password ? 'visibility_off' : 'visibility'"
+                class="cursor-pointer"
+                @click="tipo_password = !tipo_password"
+              />
+            </template>
+          </q-input>
+          <q-input
+            :type="tipo_password ? 'password' : 'text'"
+            dense
+            label="Repetir a senha"
+            v-model="form.repetir_senha"
+            class="col-xs-12 col-sm q-pa-xs"
+            outlined
+          >
+            <template v-slot:append>
+              <q-icon
+                :name="tipo_password ? 'visibility_off' : 'visibility'"
+                class="cursor-pointer"
+                @click="tipo_password = !tipo_password"
+              />
+            </template>
+          </q-input>
+        </div>
+
+        <div class="row q-mt-lg">
+          <div class="col text-primary">
+            * Atenção! Guarde o "Login empresa", "Usuário" e "Senha", são os
+            dados necessários para acesso.
+          </div>
         </div>
       </q-card-section>
     </q-card>
@@ -216,6 +266,7 @@ export default defineComponent({
     const servA = servAutenticacao();
     const route = useRoute();
     const dadosFake = ref();
+    const tipo_password = ref(true);
     //
     $q.notify.setDefaults({
       position: "top",
@@ -245,6 +296,9 @@ export default defineComponent({
       uf: "",
       pais: "",
       telefone: "",
+      usuario: "",
+      senha: "",
+      repetir_senha: "",
     });
 
     const opt_tipo_conta = [
@@ -281,6 +335,7 @@ export default defineComponent({
       dadosFake,
       opt_tipo_conta,
       opt_tipo_empresa,
+      tipo_password,
     };
   },
   methods: {
@@ -338,6 +393,9 @@ export default defineComponent({
         "pais",
         "telefone",
         "situacao",
+        "usuario",
+        "senha",
+        "repetir_senha",
       ];
       const opcionais = [
         "insc_municipal",
@@ -355,8 +413,36 @@ export default defineComponent({
       for (var i in campos) {
         const campo = campos[i];
 
+        if (
+          ((campo == "email_comercial" || campo == "email_financeiro") &&
+            !this.form.email_comercial &&
+            !this.form.email_financeiro) ||
+          (this.form.email_comercial.length < 5 &&
+            !this.form.email_financeiro.length < 5)
+        ) {
+          this.$q.notify({
+            type: "negative",
+            message: "É necessário preencher ao menos um dos emails.",
+          });
+          return false;
+        }
+
         if (opcionais.indexOf(campo) > -1) {
           continue;
+        }
+
+        if (
+          campo == "senha" &&
+          (!this.form.senha ||
+            this.form.senha.length < 6 ||
+            this.form.senha != this.form["repetir_senha"])
+        ) {
+          this.$q.notify({
+            type: "negative",
+            message:
+              "A senha deve conter no mínimo 6 caracteres e deve conferir com repetir senha.",
+          });
+          return false;
         }
 
         if (
@@ -443,7 +529,7 @@ export default defineComponent({
 
       console.log("RREET", ret);
 
-      let cdg_tipo_empresa;
+      let cdg_tipo_empresa = 0;
       if (ret.agencia == 1) {
         cdg_tipo_empresa = 0;
       } else if (ret.atrativo == 1) {
@@ -474,6 +560,8 @@ export default defineComponent({
         uf: ret.uf,
         pais: ret.pais,
         telefone: ret.telefone,
+        usuario: "",
+        senha: "",
       };
 
       console.log("FORM", this.form);
