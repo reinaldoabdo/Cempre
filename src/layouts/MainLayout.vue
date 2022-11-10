@@ -12,7 +12,7 @@
         />
 
         <q-toolbar-title class="text-bold">
-          Cempre - Cadastro de empresas
+          BTMS Cempre - Cadastro de empresas
         </q-toolbar-title>
 
         <div>Quasar v{{ $q.version }}</div>
@@ -32,16 +32,12 @@
     </q-drawer>
 
     <q-page-container>
-      <transition
-        appear
-        enter-active-class="animated slideInRight"
-        leave-active-class="animated slideOutRight"
-      >
-        <router-view />
-      </transition>
+      <router-view v-slot="{ Component }">
+        <transition name="slide" mode="out-in">
+          <component :is="Component" />
+        </transition>
+      </router-view>
     </q-page-container>
-
-    <q-dialog v-show="false"> <CmpCadastro /></q-dialog>
 
     <q-footer class="text-center text-dark">
       &copy;2022 BTMS - Cempre - Todos os direitos reservados.
@@ -71,6 +67,7 @@ const linksList = [
   {
     title: "Sair",
     icon: "logout",
+    link: "/login",
   },
 ];
 
@@ -95,3 +92,22 @@ export default defineComponent({
   },
 });
 </script>
+
+<style>
+.slide-enter-active {
+  transform: translateX(100%);
+  transition: transform 0.2s;
+}
+.slide-leave-active {
+  transform: translateX(0%);
+  transition: transform 0.2s;
+}
+
+.slide-enter-to {
+  transform: translateX(0%);
+}
+
+.slide-leave-to {
+  transform: translateX(-100%);
+}
+</style>

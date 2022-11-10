@@ -224,7 +224,7 @@
             :type="tipo_password ? 'password' : 'text'"
             dense
             label="Repetir a senha"
-            v-model="form.repetir_senha"
+            v-model="form.senha_confirma"
             class="col-xs-12 col-sm q-pa-xs"
             outlined
           >
@@ -298,7 +298,7 @@ export default defineComponent({
       telefone: "",
       usuario: "",
       senha: "",
-      repetir_senha: "",
+      senha_confirma: "",
     });
 
     const opt_tipo_conta = [
@@ -395,7 +395,7 @@ export default defineComponent({
         "situacao",
         "usuario",
         "senha",
-        "repetir_senha",
+        "senha_confirma",
       ];
       const opcionais = [
         "insc_municipal",
@@ -435,7 +435,7 @@ export default defineComponent({
           campo == "senha" &&
           (!this.form.senha ||
             this.form.senha.length < 6 ||
-            this.form.senha != this.form["repetir_senha"])
+            this.form.senha != this.form["senha_confirma"])
         ) {
           this.$q.notify({
             type: "negative",

@@ -181,7 +181,7 @@ export default function servEmpresa() {
         "situacao",
         "usuario",
         "senha",
-        "repetir_senha",
+        "senha_confirma",
       ];
 
       const opcionais = [
@@ -217,7 +217,7 @@ export default function servEmpresa() {
       // 'cdg_empresa', 'cdg_utilizador', 'razao_social', 'nome', 'nome_login',
       // 'endereco', 'complemento', 'bairro', 'cep', 'cidade', 'uf', 'telefone_comercial',
       // 'telefone_financeiro', 'email_financeiro', 'email_comercial', 'fax','url', 'cnpj', '
-      // insc_municipal', 'insc_estadual', 'reg_embratur', 'usuario', 'senha', 'repetir_senha'
+      // insc_municipal', 'insc_estadual', 'reg_embratur', 'usuario', 'senha', 'senha_confirma'
 
       dados.nome = dados.razao_social;
       dados.nome_login = dados.login_empresa;
@@ -227,6 +227,24 @@ export default function servEmpresa() {
       if (dados.telefone_financeiro.length < 8) {
         dados.telefone_financeiro = dados.telefone;
       }
+
+      switch (dados.cdg_tipo_empresa) {
+        case 0:
+          dados.agencia = 1;
+          break;
+
+        case 1:
+          dados.atrativo = 1;
+          break;
+
+        case 2:
+          dados.transporte = 1;
+          break;
+
+        default:
+          dados.agencia = 1;
+      }
+
       dados.fax = "";
       dados.complemento = "";
       dados.insc_estadual = "";
@@ -245,6 +263,10 @@ export default function servEmpresa() {
       const chave = dados.chave;
       const servico = "empresa_salva";
       const ret = await apiEnviar(chave, servico, dados);
+
+      if (parseInt(ret.info[0].cdg_erro) > 0) {
+        throw new Error(nomeServ + " * " + ret.info[0].msg + " * " + campo);
+      }
 
       return ret;
     } catch (e) {

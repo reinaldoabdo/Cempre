@@ -206,10 +206,10 @@ export default defineComponent({
   },
   mounted() {
     sessionStorage.setItem("sessionx", false);
-    this.$q.notify({
-      type: "positive",
-      message: "Iniciou !!!",
-    });
+    // this.$q.notify({
+    //   type: "positive",
+    //   message: "Iniciou !!!",
+    // });
   },
   // Methods
   methods: {

@@ -209,7 +209,12 @@ export default defineComponent({
   async mounted() {
     //
     if (this.session.chave == undefined) {
-      router.push("/login");
+      this.$q.notify({
+        message: "Faça o login",
+        type: "warning",
+      });
+      this.$router.push("/login");
+      return;
     }
 
     //
