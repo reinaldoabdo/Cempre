@@ -250,12 +250,15 @@ export default function servEmpresa() {
       dados.insc_estadual = "";
       dados.reg_embratur = "";
 
-      const sess = sessionStorage.getItem("sessionx");
+      const sess = JSON.parse(sessionStorage.getItem("sessionx"));
+
+      console.log("***log: sess", sess);
 
       if (!sess || sess == null || sess.chave == undefined) {
         dados.cod_empresa = "0";
       } else {
         dados.cod_empresa = sess.cdg_empresa;
+        dados.cdg_empresa = sess.cdg_empresa;
       }
 
       console.log("***log: dados", dados);

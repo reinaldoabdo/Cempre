@@ -414,11 +414,10 @@ export default defineComponent({
         const campo = campos[i];
 
         if (
-          ((campo == "email_comercial" || campo == "email_financeiro") &&
-            !this.form.email_comercial &&
-            !this.form.email_financeiro) ||
-          (this.form.email_comercial.length < 5 &&
-            !this.form.email_financeiro.length < 5)
+          (campo == "email_comercial" || campo == "email_financeiro") &&
+          (!this.form.email_comercial || !this.form.email_financeiro) &&
+          this.form.email_comercial.length < 5 &&
+          this.form.email_financeiro.length < 5
         ) {
           this.$q.notify({
             type: "negative",
@@ -483,7 +482,27 @@ export default defineComponent({
           type: "negative",
           message: ret.info[0].msg,
         });
+        return false;
       }
+
+      if (ret.info[0].registros < 1) {
+        this.$q.notify({
+          type: "negative",
+          message:
+            "Falha desconhecida ao efetuar o cadastro, entre em contato com o administrador do sistema.",
+        });
+        return false;
+      }
+
+      this.$q.notify({
+        type: "positive",
+        message:
+          "Sucesso! Você será redirecionado para efetuar a autenticação.",
+      });
+
+      setTimeout(() => {
+        this.$router.push("/login");
+      }, 3000);
     },
     //CONSULTAR CNPJ
     async consultar_cnpj() {
@@ -517,13 +536,8 @@ export default defineComponent({
             type: "warning",
             message: "Esta empresa já está cadastrada. Faça o login.",
           });
-          //this.$router.push("/login");
+          this.$router.push("/login");
           return;
-        } else {
-          this.$q.notify({
-            type: "positive",
-            message: "Bem-vindo(a)!",
-          });
         }
       }
 
